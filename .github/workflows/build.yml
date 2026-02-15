@@ -7,27 +7,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Build dylib
         run: |
-          sudo apt update
-          sudo apt install -y make clang perl git unzip curl ldid
+          clang -dynamiclib Tweak.xm -o ytmod.dylib -framework UIKit
 
-      - name: Install Theos
-        run: |
-          git clone --recursive https://github.com/theos/theos.git $HOME/theos
-
-      - name: Build
-        run: |
-          export THEOS=$HOME/theos
-          make
-
-      - name: Upload dylib
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: ytmod
-          path: .theos/obj/debug/*.dylib
+          path: ytmod.dylib
